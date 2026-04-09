@@ -1,0 +1,40 @@
+# Text-to-3D Generator — unified requirements
+# Works on: HuggingFace Spaces (Linux/CUDA) · macOS Apple Silicon (MPS) · CPU
+#
+# On HF Spaces:
+#   - Image generation uses HF Serverless Inference API (zero local download)
+#   - Only Shap-E (~1.85 GB) downloads inside the Space on first run
+#   - HF_TOKEN is auto-available in Spaces for API access
+
+# ── Core PyTorch ──────────────────────────────────────────────────────────────
+torch>=2.1.0
+torchvision>=0.16.0
+
+# ── Image generation (local mode fallback) ────────────────────────────────────
+diffusers>=0.27.0
+transformers>=4.38.0
+accelerate>=0.28.0
+safetensors>=0.4.0
+
+# ── 3D generation — shap-e is NOT on PyPI ────────────────────────────────────
+git+https://github.com/openai/shap-e.git
+
+# ── Background removal ────────────────────────────────────────────────────────
+rembg>=2.0.50
+onnxruntime>=1.17.0
+
+# ── Mesh I/O & export ─────────────────────────────────────────────────────────
+trimesh>=4.0.0
+pygltflib>=1.15.0
+scipy>=1.11.0
+
+# ── UI (pinned — 4.44.x has a gradio_client schema bug) ──────────────────────
+gradio==4.40.0
+
+# ── Utils ─────────────────────────────────────────────────────────────────────
+huggingface-hub>=0.21.0
+Pillow>=10.0.0
+numpy>=1.24.0
+requests>=2.31.0
+tqdm>=4.66.0
+psutil>=5.9.0
