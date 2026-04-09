@@ -7,6 +7,7 @@ sdk: gradio
 sdk_version: 4.40.0
 app_file: app.py
 pinned: false
+python_version: "3.10"
 license: mit
 short_description: Text prompt to downloadable 3D mesh (GLB/OBJ)
 ---
