@@ -40,7 +40,7 @@ OpenAI's Shap-E `image300M` model (~1.5 GB) performs image-conditioned latent di
 | HF Spaces (API mode) | ~1.85 GB (Shap-E only) |
 | Local | ~8.5 GB (SDXL-Turbo + rembg + Shap-E) |
 
-**Stack:** PyTorch 2.x · Diffusers · Shap-E · rembg · trimesh · Gradio 4.40
+**Stack:** PyTorch 2.x · Diffusers · Shap-E · rembg · trimesh · Gradio 4.40 · HF Inference API
 
 ---
 
