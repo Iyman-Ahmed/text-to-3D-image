@@ -177,7 +177,7 @@ def build_ui() -> gr.Blocks:
         gr.Markdown(f"""
 # Text-to-3D Generator  ·  {mode_tag}
 **Pipeline**: Text → {img_label} → Background Removal → Shap-E → 3D Model
-**Device**: {device_label}
+**Device**: {DEVICE_LABELS.get(DEVICE, DEVICE.upper())}
 > First run will download models (~10 GB total). Subsequent runs are instant.
         """)
 
@@ -264,7 +264,6 @@ def build_ui() -> gr.Blocks:
                 model_3d_out = gr.Model3D(
                     label="3D Model  (drag to rotate)",
                     height=420,
-                    clear_color=[0.92, 0.92, 0.92, 1.0],
                 )
 
         # ── Examples ──────────────────────────────────────────────────────
