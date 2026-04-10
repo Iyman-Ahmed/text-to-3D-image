@@ -18,6 +18,7 @@ safetensors>=0.4.0
 
 # ── 3D generation — shap-e is NOT on PyPI ────────────────────────────────────
 git+https://github.com/openai/shap-e.git
+ipywidgets>=7.0.0
 
 # ── Background removal ────────────────────────────────────────────────────────
 rembg>=2.0.50
