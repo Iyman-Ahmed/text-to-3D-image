@@ -159,8 +159,17 @@ class ImageGenerator:
         Requires HF_TOKEN in env (auto-available inside HF Spaces).
         """
         from huggingface_hub import InferenceClient
+        try:
+            from huggingface_hub import get_token as _hf_get_token
+            _cached = _hf_get_token()
+        except Exception:
+            _cached = None
 
-        token = os.environ.get("HF_TOKEN") or os.environ.get("HUGGINGFACE_TOKEN")
+        token = (
+            os.environ.get("HF_TOKEN")
+            or os.environ.get("HUGGINGFACE_TOKEN")
+            or _cached
+        )
         client = InferenceClient(model=API_MODEL_ID, token=token)
 
         print(f"[ImageGen] Calling HF Inference API ({API_MODEL_ID}) …")
