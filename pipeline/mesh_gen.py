@@ -87,7 +87,6 @@ class MeshGenerator:
         self.load()
 
         from shap_e.diffusion.sample import sample_latents
-        from shap_e.util.notebooks import decode_latent_mesh
 
         # Prepare image (Shap-E expects 256×256 RGB)
         img = image.convert("RGB").resize((256, 256), Image.LANCZOS)
@@ -123,7 +122,9 @@ class MeshGenerator:
 
         print("[MeshGen] Decoding latent to mesh …")
         with torch.no_grad():
-            tri_mesh = decode_latent_mesh(self._xm, latents[0]).tri_mesh()
+            # decode_latent_mesh from shap_e.util.notebooks is just xm.decode(latent[None])
+            # but that module imports ipywidgets which isn't available outside Jupyter
+            tri_mesh = self._xm.decode(latents[0][None]).tri_mesh()
 
         # Write PLY (Shap-E native format)
         with open(ply_path, "wb") as f:
