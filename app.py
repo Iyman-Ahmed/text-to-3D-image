@@ -178,7 +178,7 @@ def build_ui() -> gr.Blocks:
 # Text-to-3D Generator  ·  {mode_tag}
 **Pipeline**: Text → {img_label} → Background Removal → Shap-E → 3D Model
 **Device**: {DEVICE_LABELS.get(DEVICE, DEVICE.upper())}
-> First run will download models (~10 GB total). Subsequent runs are instant.
+> Models download once at startup (~2 GB). Subsequent runs are fast.
         """)
 
         with gr.Row():
@@ -218,8 +218,8 @@ def build_ui() -> gr.Blocks:
                         minimum=1, maximum=8, step=1, value=4,
                     )
                     mesh_steps_input = gr.Slider(
-                        label="3D steps  (Shap-E: 16–128, higher = better)",
-                        minimum=16, maximum=128, step=16, value=64,
+                        label="3D steps  (Shap-E: 8–64, higher = better)",
+                        minimum=8, maximum=64, step=8, value=16,
                     )
                     guidance_3d_input = gr.Slider(
                         label="3D guidance scale",
@@ -316,6 +316,15 @@ if __name__ == "__main__":
     if not IS_HF_SPACE:
         print(f"  Device     : {DEVICE_LABELS.get(DEVICE, DEVICE)}")
     print("=" * 60)
+
+    # Pre-load Shap-E on startup so the first user request isn't slow.
+    # On HF Spaces this downloads ~1.85 GB once during the boot phase.
+    print("  Pre-loading Shap-E models …")
+    try:
+        mesh_gen.load()
+        print("  Shap-E ready.")
+    except Exception as e:
+        print(f"  Warning: Shap-E pre-load failed ({e}) — will retry on first request.")
 
     demo = build_ui()
     demo.queue()   # required for generator / streaming functions
