@@ -29,7 +29,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 import gradio as gr
 
-from utils.device import get_device, memory_stats
+from utils.device import get_device
 from pipeline.enhancer import (
     enhance_prompt,
     get_negative_prompt,
@@ -72,7 +72,6 @@ def run_pipeline(
     seed:            int,
     guidance_3d:     float,
     remove_bg:       bool,
-    progress=gr.Progress(track_tqdm=True),
 ):
     """
     Full text-to-3D pipeline with streaming Gradio progress.
@@ -90,14 +89,12 @@ def run_pipeline(
 
     try:
         # ── Step 1: Enhance prompt ─────────────────────────────────────────
-        progress(0.03, desc="Enhancing prompt …")
         enhanced  = enhance_prompt(prompt, style, material)
         neg_prompt = get_negative_prompt(style)
         status = log("[1/4] ✓ Prompt enhanced")
         yield None, None, None, enhanced, status
 
         # ── Step 2: Generate image ─────────────────────────────────────────
-        progress(0.10, desc="Loading SDXL-Turbo …")
         status = log(f"[2/4] ⟳ Generating image ({img_steps} steps, SDXL-Turbo) …\n"
                      f"      (first run downloads ~6.7 GB — this may take a few minutes)")
         yield None, None, None, enhanced, status
@@ -110,20 +107,17 @@ def run_pipeline(
             seed=seed,
         )
 
-        progress(0.45, desc="Image ready")
         status = log("[2/4] ✓ Image generated")
         yield generated_image, None, None, enhanced, status
 
         # ── Step 3: Remove background ──────────────────────────────────────
         if remove_bg:
-            progress(0.50, desc="Removing background …")
             status = log("[3/4] ⟳ Removing background (rembg u2net) …\n"
                          "      (first run downloads ~170 MB)")
             yield generated_image, None, None, enhanced, status
 
             clean_image = bg_remover.remove_on_white(generated_image)
 
-            progress(0.60, desc="Background removed")
             status = log("[3/4] ✓ Background removed")
             yield generated_image, clean_image, None, enhanced, status
         else:
@@ -132,7 +126,6 @@ def run_pipeline(
             yield generated_image, clean_image, None, enhanced, status
 
         # ── Step 4: Generate 3D mesh ───────────────────────────────────────
-        progress(0.65, desc="Loading Shap-E …")
         status = log(f"[4/4] ⟳ Building 3D mesh ({mesh_steps} steps, Shap-E) …\n"
                      f"      (first run downloads ~1.85 GB — please wait)")
         yield generated_image, clean_image, None, enhanced, status
@@ -144,7 +137,6 @@ def run_pipeline(
             seed=max(seed, 0),
         )
 
-        progress(1.0, desc="Done!")
         status = log("[4/4] ✓ 3D mesh saved\n\n🎉 Pipeline complete!")
         yield generated_image, clean_image, glb_path, enhanced, status
 
