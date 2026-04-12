@@ -160,7 +160,7 @@ class MeshGenerator:
                 params=params,
                 options=AttrDict(rendering_mode="stf", render_with_direction=False),
             )
-            tri_mesh = decoded.raw_meshes[0]
+            tri_mesh = decoded.raw_meshes[0].tri_mesh()
 
         # Write PLY (Shap-E native format)
         with open(ply_path, "wb") as f:
